@@ -5,152 +5,172 @@
 
 ---
 
-## Feature Opportunity: Unified Third-Party Data Integration for MSL Workflows
+## Feature Opportunity: Real-Time Field Insight Capture & Routing
 
-**Problem (from market analysis):** MSLs today context-switch across 4–6 disconnected tools (CRM, payer data, clinical trial databases, content libraries, patient insight platforms) to prepare for a single HCP engagement. No platform provides a unified, compliance-embedded intelligence layer. This is the #1 driver of CRM abandonment and low field data quality across the industry.
+### Why This Opportunity
 
-**Opportunity:** ADVANCE AI can differentiate as the integration hub for MSL teams by providing pre-built, compliant connectors to the most-used medical affairs data sources (EHR feeds, payer/formulary data, clinical literature, conference abstracts, patient insights), surfaced contextually within the MSL's native workflow.
+The market analysis identified a consistent, high-value gap: MSL field insights are systematically lost or delayed. Meeting notes sit in static CRM fields, KOL rosters are off by 30%+, and insight-to-strategy latency runs weeks. No competitor has solved the full loop — from structured field capture to intelligent enterprise routing — in a compliance-native, integration-ready platform.
+
+This feature directly addresses the ADVANCE AI PM charter: **third-party integrations** (connecting to Veeva, Salesforce, EHR systems) and **MSL products** (tooling for the MSL persona). It also aligns with McKinsey's estimate of $3–5B annual Medical Affairs efficiency gains available from GenAI, and with the market's shift from copilot to agentic AI.
+
+The feature is scoped as a **Medical Intelligence Integration Hub** — an MSL-facing workflow layer that captures field insights in a structured, AI-assisted format and routes them in real time to the right enterprise consumers (medical strategy, commercial, clinical development, regulatory).
 
 ---
 
 ## User Stories
 
-### Story 1: Pre-Call Intelligence Briefing
-**As an** MSL preparing for an HCP meeting,  
-**I want** a single consolidated pre-call brief that automatically surfaces relevant literature, the HCP's recent publications, payer coverage status for my therapy area, and any outstanding safety follow-ups,  
-**so that** I can arrive scientifically prepared and compliant without spending 45+ minutes manually assembling information across multiple tools.
+### Story 1 — Structured Insight Capture After KOL Meetings
 
-**Acceptance Criteria:**
+**As an** MSL completing a Key Opinion Leader engagement,  
+**I want** to quickly log my meeting insights in a guided, AI-assisted form that auto-suggests categories, sentiment, and follow-up actions,  
+**So that** my observations are captured accurately and consistently without adding significant documentation burden to my field time.
 
-*Given* an MSL opens a scheduled HCP meeting record in ADVANCE AI,  
-*When* the meeting is within 72 hours,  
-*Then* the system auto-generates a pre-call brief containing: (a) top 5 relevant publications from the last 90 days, (b) HCP's recent presentations/publications, (c) current formulary/payer coverage summary from integrated market access data, (d) any open safety follow-up items flagged for this HCP.
+#### Acceptance Criteria
 
-*Given* an MSL's territory includes integrated data from a third-party payer database (e.g., MMIT),  
-*When* formulary status for a covered therapy changes,  
-*Then* the brief automatically reflects the updated status and highlights the change.
+```
+Given I have completed a KOL meeting and open the insight capture screen,
+When I begin entering free-text notes,
+Then the AI should surface 3–5 suggested insight categories (e.g., "unmet need," "competitive mention," "label concern," "trial interest") based on the note content.
 
-*Given* a pre-call brief is generated,  
-*When* the MSL reviews it,  
-*Then* all scientific content is marked with source attribution and date, and any content pending MLR review is clearly flagged and non-shareable.
+Given the AI has suggested categories,
+When I accept or override one or more suggestions,
+Then my selections and the final note are saved with a structured schema (timestamp, HCP ID, therapy area, insight type, sentiment, verbatim) to the central insights store.
 
----
-
-### Story 2: Automated Adverse Event Detection in Field Notes
-**As a** medical compliance officer overseeing an MSL field team,  
-**I want** the platform to automatically detect and flag potential adverse event (AE) or product quality complaint (PQC) signals in MSL field notes as they are submitted,  
-**so that** my team meets pharmacovigilance reporting obligations without relying on MSLs to manually self-identify and escalate every potential signal.
-
-**Acceptance Criteria:**
-
-*Given* an MSL submits a field interaction note containing text,  
-*When* the AI analysis identifies language patterns associated with adverse events (symptoms, outcomes, patient-reported harm),  
-*Then* the note is automatically flagged with an AE alert, routed to the safety team queue, and the MSL receives an in-app notification within 60 seconds of submission.
-
-*Given* an AE flag is generated,  
-*When* it is reviewed by the safety team,  
-*Then* the system captures the reviewer, timestamp, resolution status, and any follow-up actions in an immutable audit log.
-
-*Given* the AE detection model is active,  
-*When* it is evaluated on a quarterly basis,  
-*Then* precision ≥ 85% and recall ≥ 90% against a labeled validation set of known AE reports must be maintained; model drift below threshold triggers an alert to the PM.
+Given the insight is saved,
+When a compliance trigger keyword is detected (e.g., adverse event mention, off-label discussion),
+Then the system automatically flags the insight for compliance review and notifies the relevant compliance officer within 15 minutes.
+```
 
 ---
 
-### Story 3: Third-Party Data Connector Configuration
-**As a** ADVANCE AI platform admin at a mid-market biotech,  
-**I want** to configure and enable pre-built integrations with our existing data vendors (e.g., MMIT for payer data, a clinical trial registry, our content management system) through a self-service UI,  
-**so that** my MSL team can access enriched data within 2 weeks of go-live without requiring a custom engineering engagement.
+### Story 2 — Automated Insight Routing to Enterprise Stakeholders
 
-**Acceptance Criteria:**
+**As a** Medical Affairs strategy lead,  
+**I want** field insights from all MSLs to be automatically classified and routed to relevant teams (clinical development, commercial, regulatory, medical information) based on content,  
+**So that** strategic signals from the field are visible to decision-makers within hours, not weeks.
 
-*Given* an admin navigates to the Integrations configuration panel,  
-*When* they select a supported connector (e.g., MMIT, Medidata, Veeva Vault, PubMed, internal SharePoint),  
-*Then* the system presents a guided 5-step setup wizard requiring only API credentials and field-mapping configuration — no code required.
+#### Acceptance Criteria
 
-*Given* a connector is configured,  
-*When* a scheduled sync runs,  
-*Then* the sync completes within 30 minutes for initial load of up to 500K records, with subsequent delta syncs completing within 5 minutes; failures surface actionable error messages to the admin.
+```
+Given an MSL has submitted a tagged field insight,
+When the platform classifies the insight type (e.g., clinical evidence gap, competitor intel, HCP sentiment),
+Then the insight is automatically routed to the pre-configured stakeholder group for that type within 30 minutes of submission.
 
-*Given* a data connector is live,  
-*When* an MSL accesses enriched data in their workflow,  
-*Then* the source system, last-sync timestamp, and data freshness indicator are visible inline so MSLs can assess data currency before using it in HCP conversations.
+Given a routed insight is received by a stakeholder,
+When the stakeholder views and acknowledges it,
+Then the submitting MSL receives confirmation that their insight reached the intended audience, closing the feedback loop.
 
----
-
-### Story 4: Conference & Congress Intelligence
-**As an** MSL team lead preparing for a major therapeutic-area congress,  
-**I want** the platform to automatically analyze submitted abstracts and flag the most relevant presentations for my therapy area and target KOL list,  
-**so that** my team spends preparation time on strategic prioritization rather than manual abstract triage.
-
-**Acceptance Criteria:**
-
-*Given* a congress is added to the ADVANCE AI congress calendar (via name or conference ID),  
-*When* abstracts are published (detected via integrated data feed or manual upload),  
-*Then* the system scores and ranks abstracts by relevance to the team's configured therapy areas and KOL watchlists, delivering a prioritized reading list to each MSL within 4 hours of publication.
-
-*Given* the prioritized abstract list is delivered,  
-*When* an MSL selects an abstract,  
-*Then* the system surfaces an AI-generated 3-sentence summary, identifies presenting authors who match KOLs in the CRM, and pre-populates a meeting request template for post-congress follow-up.
-
-*Given* the congress is ongoing,  
-*When* late-breaking results are posted,  
-*Then* the system detects and delivers an alert to relevant MSLs within 2 hours, distinguishing late-breaking content from previously analyzed abstracts.
+Given 10 or more insights on the same topic or HCP segment are received within a 7-day window,
+When the system detects the pattern,
+Then an auto-generated trend summary is surfaced to the Medical Affairs lead as a priority signal.
+```
 
 ---
 
-### Story 5: Cross-Functional Insight Sharing Dashboard
-**As a** medical affairs director,  
-**I want** to view aggregated MSL field insights — emerging HCP questions, sentiment trends, competitive intelligence signals — in a dashboard shared with commercial and regulatory stakeholders,  
-**so that** strategic decisions are informed by real-time field intelligence rather than lagging quarterly reports.
+### Story 3 — EHR-Embedded MSL Request Button for HCPs
 
-**Acceptance Criteria:**
+**As an** HCP managing a complex patient case,  
+**I want** to request real-time scientific support from the relevant MSL directly from within my EHR workflow,  
+**So that** I can access the most current clinical evidence and off-label safety data without leaving my point-of-care system.
 
-*Given* MSLs have submitted field interaction notes over a rolling 30-day period,  
-*When* a medical affairs director opens the Insights Dashboard,  
-*Then* the system displays: (a) top 10 emerging questions by theme and frequency, (b) sentiment trend by therapy area (positive/neutral/negative), (c) competitive product mentions flagged with source count, (d) geographic heat map of HCP engagement intensity — all updated within 24 hours of new notes.
+#### Acceptance Criteria
 
-*Given* a director wants to share insight data with a commercial colleague,  
-*When* they export or share the dashboard,  
-*Then* the system applies role-based data filters automatically — commercial users see aggregated trends without access to individual HCP-identifiable interaction records, preserving firewall compliance.
+```
+Given an HCP is viewing a patient record in a connected EHR system,
+When they click the embedded "Request MSL Support" action,
+Then a support request is created in ADVANCE AI, pre-populated with the HCP's NPI, specialty, and (de-identified) therapeutic context, and the assigned MSL is notified within 2 minutes.
 
-*Given* a significant trend spike is detected (e.g., >200% week-over-week increase in a query theme),  
-*When* the spike persists for 48 hours,  
-*Then* the system sends an automated alert to the medical affairs director and the linked product PM with the trend summary and drill-down link.
+Given the MSL receives the request notification,
+When they accept the engagement,
+Then the HCP receives an in-EHR acknowledgement with the MSL's name, response SLA, and a secure async channel for follow-up.
+
+Given the HCP interaction is complete,
+When the MSL closes the engagement,
+Then the full interaction summary is automatically logged as a structured field insight in the platform, attributed to the HCP, and flagged for any compliance review triggers.
+```
 
 ---
 
-## Product Spec: Medical Intelligence Integration Hub
+### Story 4 — Integration Connector for Veeva / Salesforce CRM Sync
+
+**As a** Medical Affairs operations manager,  
+**I want** MSL field insights captured in ADVANCE AI to automatically sync to our existing Veeva Vault CRM (or Salesforce Life Sciences Cloud) records,  
+**So that** the field team does not have to enter data twice and our CRM remains the system of record for downstream reporting.
+
+#### Acceptance Criteria
+
+```
+Given an MSL submits a completed field insight in ADVANCE AI,
+When the platform detects an active Veeva or Salesforce integration for the customer's tenant,
+Then the insight is translated to the target CRM's data model and synced within 5 minutes, with a conflict-resolution log if a duplicate record exists.
+
+Given a CRM sync completes,
+When the MSL views the insight in ADVANCE AI,
+Then the record displays a "Synced to [CRM name]" status badge with a timestamp and a deep-link to the CRM record.
+
+Given the integration is configured for bidirectional sync,
+When a field is updated in the CRM (e.g., HCP contact details changed),
+Then the corresponding record in ADVANCE AI is updated within 15 minutes, with the source of change logged in the audit trail.
+```
+
+---
+
+### Story 5 — Compliance-Auditable Insight Trail
+
+**As a** pharma compliance officer,  
+**I want** every field insight — from initial capture through routing, review, and CRM sync — to have a complete, immutable audit trail,  
+**So that** I can demonstrate regulatory compliance (21 CFR Part 11, GDPR) during audits without manual reconstruction of records.
+
+#### Acceptance Criteria
+
+```
+Given any field insight record exists in the system,
+When I access the audit trail for that record,
+Then I can see every state transition (created, edited, flagged, reviewed, routed, synced, archived) with timestamps, actor identities, and change diffs.
+
+Given a compliance audit is initiated,
+When I export the audit trail for a specified date range and MSL roster,
+Then I receive a structured, tamper-evident report (PDF + JSON) within 10 minutes, covering all relevant records.
+
+Given a record is flagged for compliance review,
+When the reviewing officer closes the review with a decision (cleared/escalated),
+Then the decision, rationale, and reviewer identity are permanently appended to the record and cannot be deleted or modified.
+```
+
+---
+
+## One-Page Product Spec: Medical Intelligence Integration Hub
 
 ### Problem Statement
-MSL teams at mid-market biotech and specialty pharma operate across 4–6 disconnected data tools per engagement cycle. This fragmentation drives 45+ minutes of manual pre-call assembly, poor field data quality (contributing to the industry's 50–63% CRM abandonment rate), pharmacovigilance exposure from missed AE detection, and slow insight-to-strategy cycles. The Veeva–Salesforce decoupling has created an active switching window that ADVANCE AI can capitalize on.
+
+Medical Affairs teams are generating significant field intelligence through MSL engagements — but this intelligence is routinely lost, delayed, or siloed. MSLs spend 30–40% of their admin time on manual documentation. KOL rosters are off by 30%+ due to stale data. Field insights take weeks to reach the strategic teams who need them. The platforms MSLs use daily (CRM, EHR, literature tools) do not talk to each other, creating duplication and compliance risk. The result: Medical Affairs functions as a cost center rather than the strategic intelligence asset it could be.
 
 ### Proposed Solution
-Build a **Medical Intelligence Integration Hub** as a core product module within the ADVANCE AI MSL platform, delivering:
 
-1. **Pre-built third-party connectors** (MMIT, PubMed, Veeva Vault, Medidata, SharePoint, Salesforce) configurable via a self-service admin UI — no custom engineering required
-2. **Automated pre-call briefing** surfacing contextual intelligence from connected data sources within the MSL workflow
-3. **AI-powered AE/PQC detection** embedded in note-submission with automated pharmacovigilance routing
-4. **Congress Intelligence** — abstract triage, KOL matching, and late-breaking alert delivery
-5. **Cross-functional insights dashboard** with role-based data access controls
+Build the **Medical Intelligence Integration Hub** as a core capability of the ADVANCE AI platform — an MSL-facing workflow layer with four components:
+
+1. **AI-assisted structured insight capture** — guided post-meeting logging with auto-categorization, sentiment detection, and compliance flagging
+2. **Intelligent routing engine** — rules-based + AI-classified routing of insights to the right enterprise stakeholders (medical strategy, clinical development, commercial, regulatory) in real time
+3. **EHR integration layer** — embedded HCP-to-MSL request widgets in connected EHR systems, enabling point-of-care scientific support requests that auto-generate structured field records
+4. **CRM bidirectional sync** — pre-built connectors to Veeva Vault CRM and Salesforce Life Sciences Cloud, eliminating double-entry and maintaining CRM as system of record
+
+All components share a single compliance-auditable data layer with immutable audit trails meeting 21 CFR Part 11 and GDPR requirements.
 
 ### Success Metrics
-| Metric | Baseline (industry) | Target (12 months post-launch) |
+
+| Metric | Baseline (Current) | Target (6 months post-launch) |
 |---|---|---|
-| Pre-call prep time per MSL | 45–60 min | ≤ 20 min |
-| CRM adoption rate (notes submitted / meetings logged) | ~40–50% | ≥ 75% |
-| AE detection recall rate | Manual / ad hoc | ≥ 90% automated detection |
-| Time from field note to insight dashboard | 1–4 weeks (manual QBR) | ≤ 24 hours |
-| Integration setup time (admin to live) | 4–12 weeks (custom eng) | ≤ 2 weeks (self-serve) |
-| Net Promoter Score (MSL users) | — | ≥ 50 |
+| MSL documentation time per field interaction | ~25 min | ≤ 10 min |
+| Insight-to-stakeholder routing latency | Days to weeks | < 1 hour (P90) |
+| KOL data accuracy (vs. validated external source) | ~70% (industry avg.) | ≥ 90% |
+| CRM data duplication rate | High (manual) | < 2% |
+| Compliance audit prep time | ~3 days (manual) | < 30 min (automated export) |
+| MSL NPS for platform | Baseline TBD | ≥ 8.0 / 10 |
 
-### Out of Scope (v1)
-- Building proprietary payer data or clinical databases (integration-first approach; data ownership remains with vendors)
-- AI-generated promotional or marketing content (MLR-approved content only; outside medical affairs mandate)
-- Patient-facing tools or direct HCP engagement automation (human MSL remains the engagement principal)
-- Real-time EHR write-back or clinical decision support (regulatory pathway complexity deferred to v2)
-- Full clinical trial management or IND/NDA regulatory submission workflows
+### Out of Scope
 
----
-
-*Linked market analysis: [market-analysis-2026-06-04.md](market-analysis-2026-06-04.md)*
+- Replacing the customer's existing CRM (Veeva or Salesforce) — ADVANCE AI integrates with, not replaces, the CRM
+- Direct HCP-facing patient communication or telehealth functionality
+- Clinical trial enrollment or CTMS functionality
+- Drug safety / pharmacovigilance case processing (PV workflows are flagged to existing PV systems, not managed in-platform)
+- Custom EHR development for non-standard EHR systems in the first release; GA scope targets Epic, Cerner (Oracle Health), and Veeva Vault integrations only
